@@ -3,7 +3,8 @@ guid: 8a27ce87004994641be8eb2b19447f2e
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - mCoolDown: {fileID: 9049600779158280463, guid: f48f660465d7d7249a105344bf1dbb93, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

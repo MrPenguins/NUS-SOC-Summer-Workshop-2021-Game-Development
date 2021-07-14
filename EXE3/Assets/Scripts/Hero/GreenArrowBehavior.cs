@@ -9,9 +9,9 @@ public class GreenArrowBehavior : MonoBehaviour
     public float mHeroRotateSpeed = 90f / 2f; // 90-degrees in 2 seconds
     public float mHeroAccleration = 5f;
     private int mTotalEggCount = 0;
-    private float t1=0f;
     private int touchedEnemy = 0;
     private int destoryEnemy = 0;
+    public GameObject mCoolDown;
 
     // Start is called before the first frame update
     void Start()
@@ -51,16 +51,18 @@ public class GreenArrowBehavior : MonoBehaviour
 
 
         }
-        float t2=Time.time;
         // Now spawn an egg when space bar is hit
-        if (Input.GetKey(KeyCode.Space) && t2-t1>=0.2)
+        if (Input.GetKey(KeyCode.Space))
         {
-            t1=t2;            
-            GameObject e = Instantiate(Resources.Load("Prefabs/Egg") as GameObject); // Prefab MUST BE locaed in Resources/Prefab folder!
-            e.transform.up=transform.up;
-            e.transform.localPosition = transform.localPosition;
-            // Debug.Log("Spawn Eggs:" + e.transform.localPosition);
-            mTotalEggCount++;            
+            if (mCoolDown.GetComponent<CoolDownBar>().ReadyForNext())
+            {         
+                GameObject e = Instantiate(Resources.Load("Prefabs/Egg") as GameObject); // Prefab MUST BE locaed in Resources/Prefab folder!
+                e.transform.up=transform.up;
+                e.transform.localPosition = transform.localPosition;
+                // Debug.Log("Spawn Eggs:" + e.transform.localPosition);
+                mTotalEggCount++;
+                mCoolDown.GetComponent<CoolDownBar>().TriggerCoolDown();
+            }            
         }
 
         transform.localPosition = p;

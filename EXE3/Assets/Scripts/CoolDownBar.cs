@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class CoolDownBar : MonoBehaviour
 {
-    public float mSecToCoolDown = 1f;
+    public float mSecToCoolDown = 0;
     private float mLastTriggered = 0f;
     private bool mActive = false;
     private float mInitBarWidth = 0f;
@@ -24,6 +24,12 @@ public class CoolDownBar : MonoBehaviour
     {
         if (mActive)
             UpdateCoolDownBar();
+        else
+        {
+            Vector2 s = GetComponent<RectTransform>().sizeDelta;
+            s.x = 0;
+            GetComponent<RectTransform>().sizeDelta = s;
+        }
     }
 
     private void UpdateCoolDownBar()
@@ -31,10 +37,10 @@ public class CoolDownBar : MonoBehaviour
         float sec = SecondsTillNext();
         float percentage = sec / mSecToCoolDown;
 
-        if (sec < 0)
+        if (sec <= 0)
         {
             mActive = false;
-            percentage = 1.0f;
+            percentage = 0f;
         }
             
         Vector2 s = GetComponent<RectTransform>().sizeDelta;
