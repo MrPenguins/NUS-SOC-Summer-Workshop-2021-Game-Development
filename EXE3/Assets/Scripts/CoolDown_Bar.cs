@@ -3,6 +3,24 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/* USAGE!在greenup里面另外还需要操作如下
+
+public GameObject mCoolDown;
+//在unity里面，创建一个image
+//把canvas的image拖到greenUp的mCoolDown来赋值
+
+if (Input.GetKey(KeyCode.Space))
+        {
+            if (mCoolDown.GetComponent<CoolDownBar>().Ready())
+            {
+                //Here spawn an egg
+                mCoolDown.GetComponent<CoolDownBar>().TriggerCoolDown();
+            }
+        }
+
+
+*/
+
 public class CoolDownBar : MonoBehaviour
 {
     public float interval = 1f;
@@ -50,7 +68,7 @@ public class CoolDownBar : MonoBehaviour
         if (active)
         {
             sec = interval - (Time.time - lastAt);
-            //������Ϊ�㣬����Ϊ0
+            //当此项为零，长度为0
         }
         return sec;
     }
@@ -61,7 +79,7 @@ public class CoolDownBar : MonoBehaviour
         if (flag)
         {
             active = true;
-            lastAt = Time.time;//��������Ϊ�����
+            lastAt = Time.time;//重新设置为最长长度
             UpdateCoolDownBar();
         }
         return flag;
