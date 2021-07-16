@@ -8,27 +8,44 @@ public class MainCharacterBehavior : MonoBehaviour
     public float jumpVelocity = 10f;
     public float doubleJumpVelocity;
     public bool ableDoubleJump;
+    public bool ableChangeGravity;
 
     private Rigidbody2D myRidbody2D;
+    private BoxCollider2D myFeet;
     private bool isOnGround;
     private bool doubleJump;
+    private bool isAlive = true;
 
     // Start is called before the first frame update
     void Start()
     {
         myRidbody2D = GetComponent<Rigidbody2D>();
+        myFeet = GetComponent<BoxCollider2D>();
+        isAlive = true;
     }
 
     // Update is called once per frame
     void Update()
     {
-        Run();
-        Jump();
+        CheckOnGround();
+        Move();
+    }
+
+    void Move()
+    {
+        if (isAlive)
+        {
+            Run();
+            Jump();
+            ChangeGravity();
+        }
     }
 
     void Run()
     {
         Vector2 runV = new Vector2(myRidbody2D.velocity.x, myRidbody2D.velocity.y);
+        if (isOnGround)
+            runV.x = 0;
         if (!(Input.GetKey(KeyCode.A) && Input.GetKey(KeyCode.D)))
         {
             if (Input.GetKey(KeyCode.A))
@@ -49,7 +66,7 @@ public class MainCharacterBehavior : MonoBehaviour
 
     void Jump()
     {
-        if (Input.GetKeyDown(KeyCode.W))
+        if (Input.GetKeyDown(KeyCode.Space))
         {
             if(isOnGround)
             {
@@ -70,19 +87,51 @@ public class MainCharacterBehavior : MonoBehaviour
         }
     }
 
-    public void OnCollisionEnter2D(Collision2D collisionObject)//ÉèÖÃ²ÎÊý
+    public void CheckOnGround()
     {
-        if (collisionObject.collider.tag == "Ground")
-        {
-            isOnGround = true;
-        }
+        isOnGround = myFeet.IsTouchingLayers(LayerMask.GetMask("Ground"));
+        //Debug.Log(isOnGround);
     }
-    public void OnCollisionExit2D(Collision2D collisionObject)
+    
+    public void OnCollisionEnter2D(Collision2D collisionObject)
     {
-        if (collisionObject.collider.tag == "Ground")
+        if (collisionObject.collider.tag == "Trap")
         {
-            isOnGround = false;
+            Death();
         }
     }
 
+    public void Death()
+    {
+        isAlive = false;
+        Vector3 deathPosition = new Vector3(0,0,0);
+        if (myRidbody2D.velocity.x >= 0)
+        {
+            deathPosition.z = 90;
+        }
+        else
+        {
+            deathPosition.z = -90;
+        }
+        transform.rotation = Quaternion.Euler(deathPosition);
+    }
+
+    public void ChangeGravity()
+    {
+
+        if (Input.GetKeyDown(KeyCode.W) && ableChangeGravity)
+        {
+            Vector3 newGravity = Physics2D.gravity;
+            newGravity.y = -newGravity.y;
+            Physics2D.gravity = newGravity;
+
+            Vector3 newRotation = new Vector3(transform.rotation.x, transform.rotation.y, transform.rotation.z);
+            if (newRotation.x == 0)
+                newRotation.x = 180;
+            else
+                newRotation.x = 0;
+            transform.rotation = Quaternion.Euler(newRotation);
+        }
+    }
+    
 }
